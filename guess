@@ -1,0 +1,54 @@
+#!/usr/bin/python3
+
+import random
+import sys
+import re
+import math
+
+N = 100
+
+def removeLf(line):
+    cr = line.find('\r')
+    lf = line.find('\n')
+    if cr > 0:
+        return line[0: cr]
+    else:
+        return line[0: lf]
+
+if __name__ == "__main__":
+    solution = random.randint(0, N)
+    life = 8
+    
+    # Can you understand the regex below?
+    # Just to handle new line in linux and windows
+    emptyLine = re.compile("^[\\s]{0,}[\\n|\\r\\n]")
+
+    while life > 0:
+        print("Enter an integer between 0 and %d: " %N, end = "", flush = True)
+        guess = sys.stdin.readline()
+        if emptyLine.match(guess):
+            continue
+        try:
+            guess = int(guess)
+        except ValueError:
+            print("'%s' is not a valid decimal integer. Try again" %removeLf(guess))
+            continue
+
+        hit = False
+        if guess > solution:
+            life -= 1
+            print("%d is too big. %d chances left" %(guess, life))
+        elif guess < solution:
+            life -= 1
+            print("%d is too small. %d chances left" %(guess, life))
+        else:
+            print("Excited! You get the correct answer %d!" %(guess))
+            hit = True
+            break
+
+    if hit:
+        bonus = int(random.random() * math.log2(N)) + life
+        print("You are awarded %d seconds from Elder!" %bonus)
+    else:
+        penalty = int(1926 / (random.random() * math.log2(N)))
+        print("Naive! Elder is angry! %d seconds are lost from your life" %penalty)
